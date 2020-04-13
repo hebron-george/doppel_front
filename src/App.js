@@ -7,6 +7,8 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import AppConstants from './AppConstants';
+import axios from 'axios';
 
 function App() {
   return (
@@ -49,9 +51,7 @@ function Home() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
+        <HelloWorld />
         <a
           className="App-link"
           href="https://reactjs.org"
@@ -63,6 +63,30 @@ function Home() {
       </header>
     </div>
   );
+}
+
+class HelloWorld extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: 'Loading from backend...',
+    }
+  }
+
+  componentDidMount() {
+    axios.get(AppConstants.APIEndpoints.HELLOWORLD)
+      .then(response => {
+        console.log("Got this response from the back end: " + JSON.stringify(response))
+        this.setState({message: response.data.message})
+      })
+      .catch((e) => this.setState({message: "ERROR: " + e}))
+  }
+
+  render() {
+    return (
+      <h1>{this.state.message}</h1>
+    );
+  }
 }
 
 export default App;
